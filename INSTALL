@@ -20,6 +20,3 @@ porting or code fitness.  I have, however, had few problems on the three
 platforms I've tried: Intel Linux, Cygwin, and Sparc Solaris (so at least
 the endian problem is covered).
 
-Optional arguments to configure:
-
---enable-altcolors   Enable a different default palette.

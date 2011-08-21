@@ -1,7 +1,6 @@
 /* global VGA palette & dos font.  May be updated by IDF stuff */
 
 int color_table[256] = {
-#ifndef ALT_COLORS
   0xff000000,
   0xff0000aa,
   0xff00aa00,
@@ -10,34 +9,14 @@ int color_table[256] = {
   0xffaa00aa,
   0xffaa5500,
   0xffaaaaaa,
-  0xff7d7d7d,
-  0xff7d7dff,
-  0xff7dff7d,
-  0xff7dffff,
-  0xffff7d7d,
-  0xffff7dff,
-  0xffffff7d,
+  0xff555555,
+  0xff5555ff,
+  0xff55ff55,
+  0xff55ffff,
+  0xffff5555,
+  0xffff55ff,
+  0xffffff55,
   0xffffffff
-#endif
-#ifdef ALT_COLORS 
-/* All 0x7d's should be 0x50? */
-  0xff000000,
-  0xff0000aa,
-  0xff00aa00,
-  0xff00aaaa,
-  0xffaa0000,
-  0xffaa00aa,
-  0xffaa5500,
-  0xffaaaaaa,
-  0xff7d7d7d,
-  0xff5050ff,
-  0xff50ff50,
-  0xff50ffff,
-  0xffff5050,
-  0xffff50ff,
-  0xffffff50,
-  0xffffffff
-#endif
 }; 
 
 int color_table_entries = 16;

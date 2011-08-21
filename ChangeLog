@@ -1,4 +1,10 @@
-Sun Jun  6 15:28:12 EDT 1999 Bob Copeland  <bobc@ieee.org>
+Thu Jan  4 10:30:53 EST 2001  bobc  <bobc@ieee.org>
+-- Revision 1.8
+  * Fixed palette problems (thanks magneticm!)
+
+  * Corrected usage typo and added long usage help
+
+  * Tweaked configure a little
 
 -- Revision 1.7
 
