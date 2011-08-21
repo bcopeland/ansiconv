@@ -1,0 +1,11 @@
+
+
+  This program requires giflib, which can be acquired at 
+www.ccil.org/~esr/giflib/.  Be certain that you do not install a broken
+version of the library that has all of the encode functions disabled,
+such as those that come in GNOME RPMs.  
+
+  To install, just run './configure', followed by 'make', and then 
+'make install' if all goes well.  The binaries of course may be installed 
+manually in other directories after a build.
+
