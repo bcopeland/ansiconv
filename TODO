@@ -1,3 +1,5 @@
-Things I need to do:
+Things that need to be done, but which I will probably never do:
 
-  o  Fix truncation (?) bug for large ansis 
+  o  Come up with a better security scheme for CGIs.
+  o  Fix up the autoconf stuff some.  It's kind of shaky.
+  o  Workaround Netscape's 4K line limit for GIFs. 

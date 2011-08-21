@@ -1,8 +1,5 @@
-9 June 1996
+New in this version:
 
-   I decided to start using autoconf and automake.  Very neat utilites.
-For some reason though, automake wants me to make all these stupid files
-for distribution purposes.  Anyhow, no major news to report, I think, 
-but I haven't been reading the paper lately. 
-
-
+  * First public release.
+  * Checks to see if there is a command line before assuming it's
+    a CGI.

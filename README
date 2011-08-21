@@ -1,7 +1,10 @@
-Ansiconv v. 1.3.
+Ansiconv v. 1.6.
 
 This program parses an ansi and makes a gif out of it, and displays it for 
 all to see.  Pretty swell, huh?
+
+This code is licensed under the GNU General Public License.  See the
+COPYING file for details.
 
 Read INSTALL for installation instructions.
 
@@ -11,7 +14,7 @@ Some useful features:
     memory footprint (currently, significant memory usage is 
     168 * lines of ansi + 51200).
 
-  o Can be used from command line to generate GIFs to files or pipes.
+  o Can be used from command line to generate images to files or pipes.
   
   o Can be used from webserver to serve out images
 

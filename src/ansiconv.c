@@ -149,8 +149,9 @@ void main(int argc, char *argv[]) {
   };  
 
   /* get arguments */
-  is_cgi = ( getenv( "REQUEST_METHOD" ) && ( cgi_parameter_string = 
-             getenv( "QUERY_STRING" )));
+  is_cgi = ( argc != 1 ) &&
+           ( getenv( "REQUEST_METHOD" ) && 
+           ( cgi_parameter_string = getenv( "QUERY_STRING" )));
 
   while (( option =  get_next_option( argc, argv, option_string, 
                                       long_options, is_cgi )) != -1 ) {

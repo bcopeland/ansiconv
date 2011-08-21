@@ -1,6 +1,9 @@
 
-
    The ansiconv suite of ansi conversion utilities comes from the hard
 work of the following dedicated persons:
 
-   o Bob Copeland (bobc@ieee.org) - Wrote all of the code.
+   o Bob Copeland <bobc@ieee.org> - Wrote all of the code.
+
+   o Other people gave me small, insignificant, worthless suggestions 
+     (such as "fix this resource leak").  For the most part I listened.
+

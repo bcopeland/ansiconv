@@ -1,24 +1,62 @@
--- Revision History --
+Mon May 31 11:24:53 EDT 1999 Bob Copeland  <bobc@ieee.org>
+
+-- Revision 1.6
+
+  * First public release.
+
+  * Fix at the behest of slothy@slothy.org to be smarter about
+  CGI invocation.
+
+-- Revision 1.5
+
+  * Restructured output code so that any library can be used easily with
+  a simple set of driver routines.
+
+  * Integrated all of the executables into a single executable.  
+
+  * Changed CGI variables and command line options appropriately to reflect
+  all of the options due to above.
+
+From <pureedlizard@hotmail.com>:
+  * Fixed a bug where a static variable was only initialized at startup
+ 
+ 
+-- Revision 1.4
+
+  * Rewrote GIF output to use PNG for those wary of the Unisys patents.
+
+  * Modified the CGI side to be more restrictive about which files can be 
+  viewed.
+
+   
 -- Revision 1.3
 
-  Added thumbnailing.  
+  * Added thumbnailing.  
+
+From <pureedlizard@hotmail.com>:
+  * Fixed a memory leak 
+
 
 -- Revision 1.2
 
-  I went through a lot of trouble to automate this stuff with GNU 
+  * I went through a lot of trouble to automate this stuff with GNU 
   automake & autoconf.  
-  As a side effect, ansiconv-1.2 is now GPLed! 
-  Added code to generate idfview.cgi, the IDF equivalent of ansiview.cgi.
-  Ditto for binview.cgi, except for BINs.
-  Both operate the same as the other executable.
+
+  * Added code to generate idfview.cgi, the IDF equivalent of ansiview.cgi.
+
+  * Ditto for binview.cgi, except for BINs.
+
 
 -- Revision 1.1
 
-  Command line and cgi based viewing are now in single executable.
-  Made a few changes to code structure to make it easier to add features.
-  Dropped memory usage drastically by not allocating the entire pixmap.
+  * Command line and cgi based viewing are now in single executable.
+
+  * Made a few changes to code structure to make it easier to add features.
+
+  * Dropped memory usage drastically by not allocating the entire pixmap.
+
    
 -- Revision 1.0
 
-  Original version.  It works. 
+  * Original version.  It works. 
  

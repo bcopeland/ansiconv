@@ -1,11 +1,22 @@
 
 
-  This program requires giflib, which can be acquired at 
-www.ccil.org/~esr/giflib/.  Be certain that you do not install a broken
-version of the library that has all of the encode functions disabled,
-such as those that come in GNOME RPMs.  
+This program requires either giflib or pnglib to do anything useful.
 
-  To install, just run './configure', followed by 'make', and then 
-'make install' if all goes well.  The binaries of course may be installed 
-manually in other directories after a build.
+Giflib can be obtained at http://www.ccil.org/~esr/giflib/.  Be certain 
+that you do not install a broken version of the library that has all of 
+the encode functions disabled, such as ungiflib.  I leave it up to you
+to work out the moral dilemmas associated with using a format covered
+by patents.  Libpng is open, ubiquitous and should be on most Unix 
+systems. 
+
+  To build, just run:
+
+     $ ./configure
+     $ make 
+
+  This distribution is not expected to be worthwhile enough to put much
+effort into the configuration end, so no promises are made about ease of 
+porting or code fitness.  I have, however, had few problems on the three
+platforms I've tried: Intel Linux, Cygwin, and Sparc Solaris (so at least
+the endian problem is covered).
 
