@@ -1,22 +1,37 @@
 
-
 This program requires either giflib or pnglib to do anything useful.
 
 Giflib can be obtained at http://www.ccil.org/~esr/giflib/.  Be certain 
 that you do not install a broken version of the library that has all of 
-the encode functions disabled, such as ungiflib.  I leave it up to you
-to work out the moral dilemmas associated with using a format covered
-by patents.  Libpng is open, ubiquitous and should be on most Unix 
-systems. 
+the encode functions disabled, such as ungiflib.  No one uses GIF anymore
+so just use PNG and be happy.
 
-  To build, just run:
+  To build the main library, do:
 
      $ ./configure
      $ make 
+     $ sudo make install
 
-  This distribution is not expected to be worthwhile enough to put much
-effort into the configuration end, so no promises are made about ease of 
-porting or code fitness.  I have, however, had few problems on the three
-platforms I've tried: Intel Linux, Cygwin, and Sparc Solaris (so at least
-the endian problem is covered).
+  This will install libansiconv into $prefix/lib (often /usr/local/lib), and 
+a program called ansiconv to $prefix/bin.  For PHP support, after installing
+the library do:
 
+    $ cd php
+    $ ./configure
+    $ make && sudo make install
+
+  Using the php module is as easy as:
+  <?php 
+    if(!extension_loaded('ansiconv')) {
+	    dl('ansiconv.' . PHP_SHLIB_SUFFIX);
+    }
+    header('Content-type: image/png');
+    $fp=fopen($sanitized_path, 'rb'); 
+
+    // arguments are: 
+    //   resource (file pointer)
+    //   input type (0=ansi, 1=bin, 2=idf)
+    //   output type (0=png, 1=gif)
+    //   use thumbnail mode (optional)
+    ansiconv_convert($fp, 0, 0, false);  
+  ?>

@@ -1,6 +1,6 @@
 /* global VGA palette & dos font.  May be updated by IDF stuff */
 
-int color_table[256] = {
+int default_color_table[256] = {
   0xff000000,
   0xff0000aa,
   0xff00aa00,
@@ -19,7 +19,7 @@ int color_table[256] = {
   0xffffffff
 }; 
 
-int color_table_entries = 16;
+int default_color_table_entries = 16;
 
 char dosfont[] = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 

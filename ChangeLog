@@ -1,3 +1,15 @@
+Thu Aug 24 18:17:44 EDT 2006  bobc  <me@bobcopeland.com>
+-- Revision 2.1
+  * Completely revised to use better coding style, no globals, etc
+
+  * Changed build to create a library and executable 
+
+  * Enabled 4 bpp PNG support
+
+  * Created PHP module interface
+
+  * Tweaked configure a little
+
 Thu Jan  4 10:30:53 EST 2001  bobc  <bobc@ieee.org>
 -- Revision 1.8
   * Fixed palette problems (thanks magneticm!)

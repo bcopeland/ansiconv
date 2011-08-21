@@ -1,9 +1,4 @@
 New in this version:
 
-  * Updated palette to correct mistakes in saturation for
-    intensity colors (thanks to magneticm for the detective 
-    work)
+  * PHP support, better code, smaller images, whee!
 
-  * Added an error if no output modules are stored
-
-  * Fixed a typo and added a long usage message

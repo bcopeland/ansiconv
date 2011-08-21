@@ -1,4 +1,3 @@
 Things that need to be done, but which I will probably never do:
 
-  o  Come up with a better security scheme for CGIs.
   o  Workaround Netscape's 4K line limit for GIFs. 

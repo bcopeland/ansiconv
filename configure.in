@@ -1,9 +1,10 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(src/ansiconv.c)
-AM_INIT_AUTOMAKE(ansiconv, 1.8)
+AC_INIT(src/main.c)
+AM_INIT_AUTOMAKE(ansiconv, 2.1)
 
 dnl Checks for programs.
 AC_PROG_CC
+AC_PROG_LIBTOOL
 
 dnl Make all the subdir progs
 AC_PROG_MAKE_SET

@@ -1,27 +1,28 @@
-#ifndef INC_SAUCE
-#define INC_SAUCE
+#ifndef SAUCE_H
+#define SAUCE_H
 
 #include <stdio.h>
+#include <inttypes.h>
 
-typedef struct _sc {
-  char ID[5];
-  char Version[2];
-  char Title[35];
-  char Author[20];
-  char Group[20];
-  char Date[8];
-  long FileSize;
-  unsigned char DataType;
-  unsigned char FileType;
-  unsigned short TInfo1;
-  unsigned short TInfo2;
-  unsigned short TInfo3;
-  unsigned short TInfo4;
-  unsigned char Comments;
-  unsigned char Flags;
-  char Filler[22];
-} Sauce;
+typedef struct _sauce {
+    char id[5];
+    char version[2];
+    char title[35];
+    char author[20];
+    char group[20];
+    char date[8];
+    uint32_t file_size;
+    unsigned char data_type;
+    unsigned char file_type;
+    uint16_t t_info1;
+    uint16_t t_info2;
+    uint16_t t_info3;
+    uint16_t t_info4;
+    unsigned char comments;
+    unsigned char flags;
+    char filler[22];
+} sauce_t;
 
-Sauce *getSauce( FILE *fp );
+int get_sauce(FILE *fp, sauce_t *out);
 
 #endif

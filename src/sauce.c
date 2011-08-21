@@ -4,47 +4,60 @@
 #include <stdio.h>
 #include "sauce.h"
 
-static Sauce s;
+static void get_u32(uint32_t *out, FILE *fp)
+{
+    unsigned char c[4];
 
-Sauce *getSauce( FILE *fp ) {
+    fread(c, 1, 4, fp);
+    *out = (c[3] << 24) | (c[2] << 16) | (c[1] << 8) | c[0];
+}
 
-  long cur_pos;
+static void get_u16(uint16_t *out, FILE *fp)
+{
+    unsigned char c[2];
 
-  cur_pos = ftell( fp );  
-  fseek( fp, -128, SEEK_END );
+    fread(c, 1, 2, fp);
+    *out = (c[1] << 8) | c[0];
+}
 
-  /* 
-   * can't count on Sauce structure to be char aligned, 
-   * so this bit reads it piecemeal.  Hate to add all these 
-   * numbers without #defines, but they're in sauce.h if it 
-   * really is confusing.
-   */ 
-  fread( s.ID, 1, 5, fp );
-  fread( s.Version, 1, 2, fp );
-  fread( s.Title, 1, 35, fp );
-  fread( s.Author, 1, 20, fp );
-  fread( s.Group, 1, 20, fp );
-  fread( s.Date, 1, 8, fp );
+int get_sauce(FILE *fp, sauce_t *out) 
+{
+    long cur_pos;
 
-  // NOTE: not portable.  It'll be backwards on big-endian machines
-  fread( &s.FileSize, sizeof( long ), 1, fp );
+    cur_pos = ftell(fp);  
+    if (fseek(fp, -128, SEEK_END) == -1)
+        return -1;
 
-  fread( &s.DataType, 1, 1, fp );
-  fread( &s.FileType, 1, 1, fp );
+    /* 
+     * can't count on Sauce structure to be char aligned, 
+     * so this bit reads it piecemeal.  Hate to add all these 
+     * numbers without #defines, but they're in sauce.h if it 
+     * really is confusing.
+     */ 
+    fread(out->id, 1, 5, fp);
+    fread(out->version, 1, 2, fp);
+    fread(out->title, 1, 35, fp);
+    fread(out->author, 1, 20, fp);
+    fread(out->group, 1, 20, fp);
+    fread(out->date, 1, 8, fp);
 
-  // See above warning
-  fread( &s.TInfo1, sizeof( short ), 1, fp );
-  fread( &s.TInfo2, sizeof( short ), 1, fp );
-  fread( &s.TInfo3, sizeof( short ), 1, fp );
-  fread( &s.TInfo4, sizeof( short ), 1, fp );
+    get_u32(&out->file_size, fp);
 
-  fread( &s.Comments, 1, 1, fp );
-  fread( &s.Flags, 1, 1, fp );
+    fread(&out->data_type, 1, 1, fp);
+    fread(&out->file_type, 1, 1, fp);
 
-  fseek( fp, cur_pos, SEEK_SET );
+    get_u16(&out->t_info1, fp);
+    get_u16(&out->t_info2, fp);
+    get_u16(&out->t_info3, fp);
+    get_u16(&out->t_info4, fp);
 
-  if( strncmp( s.ID, "SAUCE", 5 ) == 0 ) 
-    return &s;
+    fread(&out->comments, 1, 1, fp);
+    fread(&out->flags, 1, 1, fp);
 
-  return NULL;
+    fseek(fp, cur_pos, SEEK_SET);
+
+    if (strncmp(out->id, "SAUCE", 5) == 0) 
+        return 0;
+
+    return -1;
 }

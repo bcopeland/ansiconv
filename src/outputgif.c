@@ -2,61 +2,76 @@
  *  Giflib output driver 
  */
 #include <stdio.h>
+#include <stdlib.h>
+
+#include "outputgif.h"
 
 #ifdef HAVE_LIBGIF
 #include <gif_lib.h>
 
-static GifFileType *gif;
-static ColorMapObject *gifcmap;
+typedef struct {
+    GifFileType *gif;
+    ColorMapObject *gifcmap;
+} giflib_context_t;
    
-int gifOutputSetup( int height, int width, int *palette ) {
-  int i;
+void *gif_output_setup(int height, int width, int *palette, int num_entries) 
+{
+    int i;
 
-  gif = EGifOpenFileHandle( 1 );
+    giflib_context_t *ctx = malloc(sizeof(giflib_context_t));
+    if (!ctx)
+        return 0;
 
-  /* This can occur if giflib is installed with RPM */
-  if (!gif) {
-    fprintf( stderr, "Cannot open stdout (missing encode routines?)\n" );
-    return 0;
-  }
+    ctx->gif = EGifOpenFileHandle(1);
+    /* This can occur if giflib is installed with RPM */
+    if (!ctx->gif) {
+        fprintf( stderr, "Cannot open stdout (missing encode routines?)\n" );
+        free(ctx);
+        return 0;
+    }
 
-  gifcmap = MakeMapObject( 256, NULL );
+    ctx->gifcmap = MakeMapObject(num_entries, NULL);
 
-  for ( i=0; i<256; i++ ) {
-    gifcmap->Colors[ i ].Red   = (palette[i] & 0xff0000) >> 16;
-    gifcmap->Colors[ i ].Green = (palette[i] & 0xff00) >> 8;
-    gifcmap->Colors[ i ].Blue  = (palette[i] & 0xff); 
-  }
+    for ( i=0; i<num_entries; i++ ) {
+        ctx->gifcmap->Colors[ i ].Red   = (palette[i] & 0xff0000) >> 16;
+        ctx->gifcmap->Colors[ i ].Green = (palette[i] & 0xff00) >> 8;
+        ctx->gifcmap->Colors[ i ].Blue  = (palette[i] & 0xff); 
+    }
 
-  EGifPutScreenDesc( gif, width, height, gifcmap->BitsPerPixel, 0, gifcmap );
-  EGifPutImageDesc( gif, 0, 0, width, height, FALSE, NULL ); 
+    EGifPutScreenDesc(ctx->gif, width, height, ctx->gifcmap->BitsPerPixel, 0, 
+            ctx->gifcmap);
+    EGifPutImageDesc(ctx->gif, 0, 0, width, height, FALSE, NULL); 
 
-  return 1;
+    return ctx;
 }
 
-int gifOutputBlock( char *pixels, int height, int width ) {
-
-  EGifPutLine( gif, pixels, height * width );
-  return 1;
+void gif_output_block(void *user, char *pixels, int height, int width) 
+{
+    giflib_context_t *ctx = (giflib_context_t *) user;
+    EGifPutLine(ctx->gif, pixels, height * width );
 }
 
-int gifOutputFinish() {
-  EGifCloseFile( gif );
+void gif_output_finish(void *user) 
+{
+    giflib_context_t *ctx = (giflib_context_t *) user;
+    EGifCloseFile(ctx->gif);
+    free(ctx);
 }
 
 #else
 
-int gifOutputSetup( int height, int width, char *palette ) {
-  fprintf( stderr, "GIF output option not enabled at compile time\n" );
-  return 0;
+void *gif_output_setup(int height, int width, int *palette, int num_entries) 
+{
+    fprintf(stderr, "GIF output option not enabled at compile time\n");
+    return 0;
 }
 
-int gifOutputBlock( char *pixels, int height, int width ) {
-  return 0;
+void gif_output_block(void *user, char *pixels, int height, int width) 
+{
 }
 
-int gifOutputFinish() {
-  return 0;
+void gif_output_finish(void *user) 
+{
 }
 
 #endif

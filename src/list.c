@@ -3,117 +3,125 @@
  *  can grow either way.  The user has to be smart; there is ample 
  *  opportunity to scribble over pointers that get passed back.
  *
- *  Possible future enhancement: parse multiple lines into a 
- *  single node.
+ *  Possible future enhancement: parse multiple lines into a single node.
  */
 #include <stdio.h>
+#include <stdlib.h>
 
-typedef struct _node {
-  char *line;
-  struct _node *prev;
-  struct _node *next;  
-} Node;
+#include "list.h"
 
-Node List;
-Node *current;
-int line_width;
-int num_lines;
-void (*initialize)(char *, int) = NULL;
-
-void listInit( int width, void (*init)(char *, int) ) {
-  List.next = List.prev = &List;
-  current = &List;
-  line_width = width;
-  initialize = init;
-  num_lines = 0;
+list_t *list_create(int width, void(*init)(char *, int)) 
+{
+    list_t *l = malloc(sizeof(list_t));
+    l->head.next = l->head.prev = &l->head;
+    l->current = &l->head;
+    l->line_width = width;
+    l->initialize = init;
+    l->num_lines = 0;
 }
 
-void listRewind() {
-  current = &List;
+void list_rewind(list_t *l) 
+{
+    l->current = &l->head;
 }
 
-int listHeight() {
-  return( num_lines );
+int list_height(list_t *l) 
+{
+    return l->num_lines;
 }
 
-int listWidth() {
-  return line_width;
+int list_width(list_t *l) 
+{
+    return l->line_width;
 }
 
-void getNode( Node **new ) {
-  *new = (Node *) malloc( sizeof(Node) ); 
-  (*new)->line = (char *) malloc( line_width ); 
-  if (initialize) {
-    initialize( (*new)->line, line_width );
-  }
-  num_lines ++;
+static void get_node(list_t *l, node_t **node)
+{
+    *node = malloc(sizeof(node_t)); 
+    (*node)->line = malloc(l->line_width); 
+    if (l->initialize) 
+        l->initialize((*node)->line, l->line_width);
+    
+    l->num_lines++;
 }
 
-char *listForward() {
-  if( current->next != &List ) 
-    current = current->next;
-  return current->line;
+char *list_forward(list_t *l) 
+{
+    if (l->current->next != &l->head) 
+        l->current = l->current->next;
+    return l->current->line;
 }
 
-char *listBackward() {
-  if( current->prev != &List )
-    current = current->prev;
-  return current->line;
+char *list_backward(list_t *l) 
+{
+    if (l->current->prev != &l->head)
+        l->current = l->current->prev;
+    return l->current->line;
 }
 
-char *listForwardCat() {
-  if ( current->next != &List ) {
-    current = current->next;
-  } else {
-    getNode( &current->next );
-    current->next->prev = current;
-    current = current->next;
-    current->next = &List; 
-    List.prev = current; 
-  }
-  return current->line;
+char *list_forward_cat(list_t *l)
+{
+    if (l->current->next != &l->head) {
+        l->current = l->current->next;
+    } else {
+        get_node(l, &l->current->next);
+
+        l->current->next->prev = l->current;
+        l->current = l->current->next;
+        l->current->next = &l->head; 
+        l->head.prev = l->current; 
+    }
+    return l->current->line;
 }
 
-char *listBackwardCat() {
-  if ( current->prev != &List ) {
-    current = current->prev;
-  } else {
-    getNode( &current->prev );
-    current->prev->next = current;
-    current = current->prev;
-    current->prev = &List; 
-    List.next = current;
-  }
-  return current->line;
+char *list_backward_cat(list_t *l) 
+{
+    if (l->current->prev != &l->head) {
+        l->current = l->current->prev;
+    } else {
+        get_node(l, &l->current->prev);
+        l->current->prev->next = l->current;
+        l->current = l->current->prev;
+        l->current->prev = &l->head; 
+        l->head.next = l->current;
+    }
+    return l->current->line;
 }
 
-char *listContents() {
-  return( current->line );
+char *list_contents(list_t *l) 
+{
+    return l->current->line;
 }
 
-void *listGetPosition() {
-  return( current );
+void *list_get_position(list_t *l) 
+{
+    return l->current;
 }
 
-void listSetPosition( void *node ) {
-  current = (Node *) node;
+void list_set_position(list_t *l, void *node) 
+{
+    l->current = node;
 }
 
-void freeNode( Node *new ) {
-  free( new->line );
-  free( new );
+static void free_node(node_t *node) 
+{
+    free(node->line);
+    free(node);
 }
 
-int endList() {
-  return( current->next == &List );
+int end_list(list_t *l) 
+{
+    return l->current->next == &l->head;
 }
 
-void listDestroy() {
-  current = List.next;
-  while( current != &List ) {
-    Node *temp = current;
-    current = current->next;
-    freeNode( temp );
-  }
+void list_destroy(list_t *l)
+{
+    l->current = l->head.next;
+    while (l->current != &l->head) 
+    {
+        node_t *tmp = l->current;
+        l->current = l->current->next;
+        free_node(tmp);
+    }
 }
 
