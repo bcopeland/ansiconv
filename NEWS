@@ -1,5 +1,23 @@
 New in this version:
 
-  * First public release.
-  * Checks to see if there is a command line before assuming it's
-    a CGI.
+  * Added configure option for using a different palette.  
+    Several people have noted that the colors look wrong.
+    I took them from the _Programmer's Guide To EGA/VGA Cards_ 
+    where they are defined as 6-bit components (as in the VGA
+    registers) and scaled them linearly to 8-bit components.
+    So either I messed up the math, should have scaled in
+    some other color space, or the VGA DACs operate 
+    differently in text and high-resolution modes.  I haven't
+    decided which.  At any rate, until I get a chance to look
+    over it once more, you can supply the --enable-altcolors 
+    switch to ``configure'' to use a colormap that was graciously 
+    supplied by Vertigo.
+     
+  * Fixed a problem with the CLI and CGI invocation selection.
+    I had a conditional backwards.  Thanks to Neophyte for 
+    pointing that out.
+
+  * Fixed configure scripts so that libgif is not required.
+
+  * There was a memory leak -- none of the binary lists were
+    destroyed.

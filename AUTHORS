@@ -2,8 +2,14 @@
    The ansiconv suite of ansi conversion utilities comes from the hard
 work of the following dedicated persons:
 
-   o Bob Copeland <bobc@ieee.org> - Wrote all of the code.
+   o Bob Copeland <bobc@ieee.org> - Wrote the original code.
 
-   o Other people gave me small, insignificant, worthless suggestions 
-     (such as "fix this resource leak").  For the most part I listened.
+   o Other people have given suggestions and donated code: 
 
+     - Vertigo/Dementia recommended modifying the colormaps
+     - Slothy suggested smarter CGI detection
+     - Neophyte pointed out the above CGI detection was broken
+     - MrMr generally provided a testbed for my code by using it
+       in an application and found a couple bugs early on.
+     - Lord Scarlet has used this in production and keeps finding
+       broken stuff.

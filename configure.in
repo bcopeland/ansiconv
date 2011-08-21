@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(src/ansiconv.c)
-AM_INIT_AUTOMAKE(ansiconv, 1.6)
+AM_INIT_AUTOMAKE(ansiconv, 1.7)
 
 dnl Checks for programs.
 AC_PROG_CC
@@ -8,9 +8,14 @@ AC_PROG_CC
 dnl Make all the subdir progs
 AC_PROG_MAKE_SET
 
+dnl Get command line options
+AC_ARG_ENABLE(altcolors,altcolors: Enable an alternate color table,
+              AC_DEFINE(ALT_COLORS))
+
 dnl Checks for libraries.
-AC_CHECK_LIB(gif,  EGifOpenFileHandle,,
-  AC_MSG_ERROR(This program will not operate without the giflib library))
+AC_CHECK_LIB(gif,  EGifOpenFileHandle,
+             AC_DEFINE(HAVE_LIBGIF)
+             LIBS="$LIBS -lgif",,)
 
 AC_CHECK_LIB(png,  png_create_write_struct,
              AC_DEFINE(HAVE_LIBPNG) 
@@ -20,7 +25,6 @@ AC_CHECK_LIB(png,  png_create_write_struct,
 dnl Checks for header files.
 AC_HEADER_STDC
 AC_CHECK_HEADERS(getopt.h)
-
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST

@@ -1,4 +1,15 @@
-Mon May 31 11:24:53 EDT 1999 Bob Copeland  <bobc@ieee.org>
+Sun Jun  6 15:28:12 EDT 1999 Bob Copeland  <bobc@ieee.org>
+
+-- Revision 1.7
+
+  * Fixed a memory leak
+
+  * Added configure option for using a different palette.  
+     
+  * Fixed configure scripts so that libgif is not required.
+
+  * Fixed a problem with the CLI and CGI invocation selection.
+    I had a conditional backwards.
 
 -- Revision 1.6
 

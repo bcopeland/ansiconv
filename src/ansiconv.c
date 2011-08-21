@@ -124,7 +124,7 @@ int get_next_option( int argc, char *argv[], char *optstring,
 }
         
 
-void main(int argc, char *argv[]) {
+int main(int argc, char *argv[]) {
 
   char *extension;
   int input_format = -1;
@@ -149,7 +149,7 @@ void main(int argc, char *argv[]) {
   };  
 
   /* get arguments */
-  is_cgi = ( argc != 1 ) &&
+  is_cgi = ( argc < 2 ) && 
            ( getenv( "REQUEST_METHOD" ) && 
            ( cgi_parameter_string = getenv( "QUERY_STRING" )));
 
@@ -311,4 +311,8 @@ void main(int argc, char *argv[]) {
     outputThumbImage( &driver );
   else
     outputImage( &driver );
+
+  listDestroy();
+
+  exit(0);
 } 
