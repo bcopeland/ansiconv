@@ -15,7 +15,7 @@ static char *line;
 static unsigned int width;
 static unsigned int height;
 
-void store( char ch, char attrib, int x ) {
+void store_idf( char ch, char attrib, int x ) {
   line[x*2] = ch;
   line[x*2 + 1] = attrib;
   if ( x == width - 1 ) {
@@ -68,10 +68,10 @@ int idfRead( char *filename ) {
          break;
 
        for( j=0; j<runlength; j++, i++ )  {
-         store( ch, attrib, i%width );  
+         store_idf( ch, attrib, i%width );  
        }
     } else {
-      store( ch, attrib, i%width );
+      store_idf( ch, attrib, i%width );
       i++;
     }
   }

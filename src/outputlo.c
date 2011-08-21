@@ -1,21 +1,22 @@
 /*
- *  Converts a BIN to a gif, using giflib.  Reduces it to an 80-wide 
- *  pixmap by an almost clever color reduction algorithm, known loosely
- *  as first-come-first-serve (FCFS) along with a RGB color cube search
- *  for the really psychadelic ansis with > 256 colors.
+ *  Reduces a BIN to an 80-wide pixmap by an almost clever color 
+ *  reduction algorithm, known loosely as first-come-first-serve 
+ *  (FCFS) along with a RGB color cube search for the really 
+ *  psychadelic ansis with > 256 colors.
  */
+
 #include <stdio.h>
-#include <gif_lib.h>
 #include "list.h"
 #include "dosfont.h" 
+#include "output.h"
 
 #ifndef MAX_DBL
 #define MAX_DBL 1e30
 #endif 
 
-void rasterizeCharacter( unsigned char ch, int x, int y, 
-                         char *framebuf, int width, 
-                         char fgindex, char bgindex );
+void rasterizeThumbCharacter( unsigned char ch, int x, int y, 
+                              char *framebuf, int width, 
+                              char fgindex, char bgindex );
 
 /* stores a .75/.25 and .5/.5 mapping table for fg & bg mixtures */
 static unsigned char shade_table[ 16 * 16 * 2 ];
@@ -144,10 +145,9 @@ int isBottom( unsigned char ch ) {
 }
 
 /*
- *  Outputs a GIF to stdout.  Assumes that the list has been 
- *  filled in appropriately.
+ * Outputs a thumbnail to stdout.
  */
-void outputImage() {
+void outputThumbImage( output_info *driver ) {
 
   int x, y;
   int i;
@@ -155,10 +155,7 @@ void outputImage() {
   char *ansibuf; 
   char *line;
   unsigned int ansibufsize;
-  FILE *fp;
   int width, height;
-  PNGFileType *gif;
-  ColorMapObject *gifcmap;
 
   width = listWidth() / 2;
   height = listHeight() * 2;
@@ -168,36 +165,23 @@ void outputImage() {
 
   memset( shade_table, 0, 16 * 16 * 2 ); 
 
-  gif = EPNGOpenFileHandle( 1 );
-  if (!gif) {
-    free (ansibuf);
-    return;
-  }
-
   for (y=0; y<height; y++) {
     line = listForward();
     for (x=0; x<width; x++) {
       unsigned char attrib = line[x * 2 + 1];
-      rasterizeCharacter( line[x * 2], x, y, ansibuf, width, 
-                          attrib & 0x0f, attrib >> 4 );  
+      rasterizeThumbCharacter( line[x * 2], x, y, ansibuf, width, 
+                               attrib & 0x0f, attrib >> 4 );  
     }
   }
 
-  gifcmap = MakeMapObject( 256, NULL );
-   
-  for ( i=0; i<256; i++ ) {
-    gifcmap->Colors[ i ].Red   = (color_table[i] & 0xff0000) >> 16;
-    gifcmap->Colors[ i ].Green = (color_table[i] & 0xff00) >> 8;
-    gifcmap->Colors[ i ].Blue  = (color_table[i] & 0xff); 
+  if (!driver->output_setup( height, width, color_table )) {
+    free( ansibuf );
+    return;
   }
-  EPNGPutScreenDesc( gif, width, height, 
-                     gifcmap->BitsPerPixel, 0, gifcmap );
-  EPNGPutImageDesc( gif, 0, 0, width, height, FALSE, NULL ); 
 
+  driver->output_block( ansibuf, height, width ); 
 
-  EPNGPutLine( gif, ansibuf, width*height );  
-
-  EPNGCloseFile( gif );
+  driver->output_finish();
   free (ansibuf);
 }
 
@@ -207,9 +191,9 @@ void outputImage() {
  * we're dealing with, calls the appropriate routines to get
  * the color index, then boom! it's done.
  */
-void rasterizeCharacter( unsigned char ch, int x, int y, 
-                         char *framebuf, int width, 
-                         char fgindex, char bgindex ) {
+void rasterizeThumbCharacter( unsigned char ch, int x, int y, 
+                              char *framebuf, int width, 
+                              char fgindex, char bgindex ) {
 
   unsigned char color = 0;
   switch ( ch ) {

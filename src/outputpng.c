@@ -1,40 +1,19 @@
 /*
- *  Converts a BIN to a PNG image file.
+ *  libpng output driver 
  */
 #include <stdio.h>
+
+#ifdef HAVE_LIBPNG
 #include <png.h>
-#include "list.h"
-#include "dosfont.h" 
 
-void rasterizeCharacter( unsigned char ch, int x, int y, 
-                         char *framebuf, int width, 
-                         char fgindex, char bgindex );
+static png_structp png_ptr;
+static png_infop info_ptr;
+static FILE *fp;
+static png_color png_palette[256];
 
-/*
- *  Outputs a PNG to stdout.  Assumes that the list has been 
- *  filled in appropriately.
- */
-void outputImage() {
+int pngOutputSetup( int height, int width, int *palette ) {
 
-  int x, y;
   int i;
-
-  char *ansibuf; 
-  png_bytep row_pointers[FNHEIGHT] ;
-  char *line;
-  unsigned int ansibufsize;
-  FILE *fp;
-  int width, height;
-  png_structp png_ptr;
-  png_infop info_ptr;
-
-  png_color png_palette[256] ;
-
-  width = listWidth() / 2;
-  height = listHeight();
-  listRewind();
-  ansibufsize = FNWIDTH * FNHEIGHT * width;
-  ansibuf = (char *) malloc (ansibufsize);
 
   fp = fdopen( 1, "wb" );
   png_ptr = png_create_write_struct( PNG_LIBPNG_VER_STRING,
@@ -44,72 +23,60 @@ void outputImage() {
 
   if (!fp || !png_ptr || !info_ptr || setjmp(png_ptr->jmpbuf)) 
   {
+    fprintf( stderr, "PNG Write Error\n" );
     fclose( fp );
-    free( ansibuf );
     if (png_ptr) png_destroy_write_struct( &png_ptr, (png_infopp) NULL );
-    return;
+    return 0;
   }
 
   png_init_io( png_ptr, fp );
-  png_set_IHDR( png_ptr, info_ptr, width*FNWIDTH, height*FNHEIGHT, 
+  png_set_IHDR( png_ptr, info_ptr, width, height, 
                 8, PNG_COLOR_TYPE_PALETTE, PNG_INTERLACE_NONE, 
                 PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE );
 
   for ( i=0; i<256; i++ ) {
-    png_palette[ i ].red   = (color_table[i] & 0xff0000) >> 16;
-    png_palette[ i ].green = (color_table[i] & 0xff00) >> 8;
-    png_palette[ i ].blue  = (color_table[i] & 0xff); 
+    png_palette[ i ].red   = (palette[i] & 0xff0000) >> 16;
+    png_palette[ i ].green = (palette[i] & 0xff00) >> 8;
+    png_palette[ i ].blue  = (palette[i] & 0xff); 
   }
   png_set_PLTE(png_ptr, info_ptr, png_palette, 256);
 
   png_write_info( png_ptr, info_ptr );
 
-  /* setup row pointers */
-  for ( i=0; i<FNHEIGHT; i++ ) {
-    row_pointers[ i ] = (png_bytep) &ansibuf[ i * FNWIDTH * width ];  
-  }
+  return 1;
+}
 
-  for (y=0; y<height; y++) {
-    line = listForward();
-    for (x=0; x<width; x++) {
-      unsigned char attrib = line[x * 2 + 1];
-      rasterizeCharacter( line[x * 2], x, 0, ansibuf, width, 
-                          attrib & 0x0f, attrib >> 4 );  
-    }
-    png_write_rows( png_ptr, row_pointers, FNHEIGHT );  
-  }
+int pngOutputBlock( char *pixels, int height, int width ) {
+  
+  int i;
+
+  for (i=0; i<height; i++) 
+     png_write_row( png_ptr, (png_bytep) &pixels[width*i] );  
+  return 1;
+}
+
+int pngOutputFinish() {
   png_write_end(png_ptr, info_ptr);
   png_destroy_write_struct(&png_ptr, (png_infopp)NULL);
 
   fclose( fp );
-  free (ansibuf);
+  return 1;
 }
 
-void rasterizeCharacter( unsigned char ch, int x, int y, 
-                         char *framebuf, int width, 
-                         char fgindex, char bgindex ) {
+#else
 
-  int i, j;
-
-  char *font_index;
-  char font_bitmap;
-  char bit;
-
-  font_index = &dosfont[ (unsigned int) (ch * FNHEIGHT) ];
-  // 8x16 font is stored as 16 bytes
-
-  for (i=0; i<FNHEIGHT; i++) {
-    font_bitmap = *(font_index + i);
-    for (j=0; j<FNWIDTH; j++) {
-      bit = 1 << (FNWIDTH-j-1);
-      if ((font_bitmap & bit) != 0) {
-        framebuf[ width * FNWIDTH * (FNHEIGHT * y + i) +
-                  x * FNWIDTH + j ] = fgindex;  
-      } else {
-        framebuf[ width * FNWIDTH * (FNHEIGHT * y + i) +
-                  x * FNWIDTH + j ] = bgindex;  
-      }
-    }
-  }
+int pngOutputSetup( int height, int width, char *palette ) {
+  fprintf( stderr, "PNG output option not enabled at compile time\n" );
+  return 0;
 }
+
+int pngOutputBlock( char *pixels, int height, int width ) {
+  return 0;
+}
+
+int pngOutputFinish() {
+  return 0;
+}
+
+#endif
 

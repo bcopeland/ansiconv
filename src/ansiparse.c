@@ -263,6 +263,8 @@ int ansiParse( char *filename ) {
   int arg_index = 0;
   int count, i;
   
+  x = saved_x = 0;
+  
   listInit( WRAP*2, initline );
   line = listForwardCat();
   saved_pos = listGetPosition();
