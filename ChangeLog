@@ -1,3 +1,11 @@
+Sat Oct 31 09:03:12 EDT 2020  bobc  <me@bobcopeland.com>
+-- Revision 3.0
+  * Converted to CMake
+
+  * Dropped PHP module and library target
+
+  * Dropped libgif support
+
 Thu Aug 24 18:17:44 EDT 2006  bobc  <me@bobcopeland.com>
 -- Revision 2.1
   * Completely revised to use better coding style, no globals, etc

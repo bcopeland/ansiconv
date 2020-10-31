@@ -6,7 +6,6 @@
 
 #include "outputpng.h"
 
-#ifdef HAVE_LIBPNG
 #include <png.h>
 
 typedef struct {
@@ -31,11 +30,10 @@ void *png_output_setup(int height, int width, int *palette, int num_entries)
     if (ctx->png_ptr)
         ctx->info_ptr = png_create_info_struct(ctx->png_ptr);
 
-    if (!ctx->fp || !ctx->png_ptr || !ctx->info_ptr || 
-         setjmp(ctx->png_ptr->jmpbuf)) 
+    if (!ctx->fp || !ctx->png_ptr || !ctx->info_ptr)
     {
         fclose(ctx->fp);
-        if (ctx->png_ptr) 
+        if (ctx->png_ptr)
             png_destroy_write_struct(&ctx->png_ptr, (png_infopp) NULL);
         free(ctx);
         return 0;
@@ -91,22 +89,3 @@ void png_output_finish(void *user)
     fclose(ctx->fp);
     free(ctx);
 }
-
-#else
-
-void *png_output_setup(int height, int width, int *palette, int num_entries) 
-{
-    fprintf(stderr, "PNG output option not enabled at compile time\n");
-    return 0;
-}
-
-void png_output_block(char *pixels, int height, int width) 
-{
-}
-
-void png_output_finish() 
-{
-}
-
-#endif
-

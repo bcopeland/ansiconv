@@ -4,25 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#ifdef HAVE_UNISTD_H
 #include <unistd.h>
-#endif
-#ifdef HAVE_GETOPT_H
 #include <getopt.h>
-#else 
-
-extern char *optarg;
-extern int optind, opterr, optopt;
-
-struct option {
-    const char *name;
-    int has_arg;
-    int *flag;
-    int val;
-};
-
-#endif
 
 #include "ansiconv.h"
 
@@ -35,7 +18,6 @@ static char option_string[] = "tf:o:g:";
 
 static struct option long_options[] = {
     {"filename",0,0,'x'},
-    {"graphic_format",1,0,'g'},
     {"help",0,0,'h'},
     {"input_format",1,0,'f'},
     {"output_file",1,0,'o'},
@@ -45,7 +27,6 @@ static struct option long_options[] = {
 
 static char *arg_desc[] = {
     "use FILE for input (optional)", "FILE",
-    "specify the output format. TYPE is (gif|png)", "TYPE",
     "display this message", 0,
     "specify the input format. TYPE is (ansi|bin|idf)", "TYPE",
     "use output file name FILE (defaults to stdout)", "FILE",
@@ -141,14 +122,6 @@ int main(int argc, char *argv[])
             case 'h':
                 long_usage( argv[0] );
                 break;
-            case 'g':
-                if ( !strcasecmp( optarg, "gif" ))
-                    output_format = GIF;
-                else if ( !strcasecmp( optarg, "png" ))
-                    output_format = PNG;
-                else 
-                    usage_error( argv[0], "invalid output format specified" );
-                break;
             case 'f':
                 if ( !strcasecmp( optarg, "ansi" ))
                     input_format = ANSI;
@@ -176,22 +149,7 @@ int main(int argc, char *argv[])
     if (!input_file_name && optind < argc) 
           input_file_name = strdup(argv[optind]);
 
-    if (output_format == -1) {
-#ifdef HAVE_LIBGIF
-      output_format = GIF;
-#else
-      output_format = PNG;
-#endif
-      if (output_file_name) {
-        extension = strrchr( output_file_name, '.' );
-        if (extension) {
-          if (!strcasecmp( extension+1, "gif" ))
-            output_format = GIF;
-          else if (!strcasecmp( extension+1, "png" ))
-            output_format = PNG;
-        }
-      }
-    }
+    output_format = PNG;
 
     if (input_format == -1) {
         input_format = ANSI;

@@ -1,9 +1,9 @@
-Ansiconv v. 2.1
+Ansiconv v3.0
 
-This program parses an ansi and makes an image out of it, and displays it for 
+This program parses an ansi and makes an image out of it, and displays it for
 all to see.  Pretty swell, huh?
 
-This code is licensed under the GNU General Public License version 2.  See 
+This code is licensed under the GNU General Public License version 2.  See
 the COPYING file for details.
 
 Read INSTALL for installation and usage instructions.
@@ -11,13 +11,11 @@ Read INSTALL for installation and usage instructions.
 Some useful features:
 
   o Outputs only a few lines of text at a time so has a fairly small
-    memory footprint (currently, significant memory usage is 
+    memory footprint (currently, significant memory usage is
     168 * lines of ansi + 51200).
 
   o Can be used from command line to generate images to files or pipes.
-  
+
   o IDF and BIN file converters.  When ANSI just isn't enough.
 
   o Thumbnails for quick & easy viewing
-
-  o PHP module interface for use from a CGI

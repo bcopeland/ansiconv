@@ -2,6 +2,7 @@
  *  Routine to grab Sauce from a file.  
  */
 #include <stdio.h>
+#include <string.h>
 #include "sauce.h"
 
 static void get_u32(uint32_t *out, FILE *fp)

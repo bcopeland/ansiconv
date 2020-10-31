@@ -3,7 +3,6 @@
 
 typedef enum {
     PNG,
-    GIF 
 } output_format_t;
 
 typedef enum {

@@ -1,4 +1,4 @@
 New in this version:
 
-  * PHP support, better code, smaller images, whee!
+  * Removed PHP support, converted to CMake
 

@@ -4,7 +4,6 @@
 
 #include "ansiconv.h"
 #include "output.h"
-#include "outputgif.h"
 #include "outputpng.h"
 #include "dosfont.h"
 
@@ -32,11 +31,6 @@ int ansiconv_convert(FILE *in, input_format_t in_format,
 
     switch (out_format) 
     { 
-        case GIF:
-            driver.output_setup = gif_output_setup; 
-            driver.output_block = gif_output_block; 
-            driver.output_finish = gif_output_finish; 
-            break;
         case PNG:
             driver.output_setup = png_output_setup; 
             driver.output_block = png_output_block; 
